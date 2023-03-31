@@ -81,25 +81,79 @@ def _pyramid_(bottom_center=(0, 0, 0)):
 
     return points
 
+def rotate_obj(points, angle):
+    angle = float(angle)
+    rotation_matrix = tf.stack([
+        [tf.cos(angle), tf.sin(angle), 0],
+        [-tf.sin(angle), tf.cos(angle), 0],
+        [0, 0, 1]
+    ])
 
+    rotate_object = tf.matmul(tf.cast(points, tf.float32), tf.cast(rotation_matrix, tf.float32))
 
+    return rotate_object
 
+# def translate_obj(points, amount):
+#     st.title("Image Translate Pyramid")
+#     x = st.slider("Enter for x:", -15, 15, 0, step=1,key='my_slider4')
+#     y = st.slider("Enter for y:", -15, 15, 0, step=1,key='my_slider5')
+#     z = st.slider("Enter for z:", -15, 15, 0, step=1,key='my_slider6')
+
+#     #translation
+#     translation = tf.constant([x, y, z], dtype=tf.float32)
+
+#     translated_points = points_pyramid2 + translation
+
+#     fig2 = plt_basic_object_(translated_points.numpy(), counter)
+
+#     return fig2
+
+choice = st.selectbox('Select a Transformation', ('Choose Transformation','Translate', 'Rotate'))
+if choice == 'Choose Transformation':
+    st.write('Please select a transformation')
+
+else:
+    st.write('You selected:', choice)
 
 if option == 'Pyramid':
     init_pyramid = _pyramid_(bottom_center=(0,0,0))
     points_pyramid2 = tf.constant(init_pyramid, dtype=tf.float32)
     counter = 2
-    st.title("Image Translate Pyramid")
-    x = st.slider("Enter for x:", -15, 15, 0, step=1,key='my_slider4')
-    y = st.slider("Enter for y:", -15, 15, 0, step=1,key='my_slider5')
-    z = st.slider("Enter for z:", -15, 15, 0, step=1,key='my_slider6')
 
-    translation = tf.constant([x, y, z], dtype=tf.float32)
+    #translation
+    if choice == 'Translate':
+        st.title("Image Translate Pyramid")
+        x = st.slider("Enter for x:", -15, 15, 0, step=1,key='my_slider4')
+        y = st.slider("Enter for y:", -15, 15, 0, step=1,key='my_slider5')
+        z = st.slider("Enter for z:", -15, 15, 0, step=1,key='my_slider6')
+        
+        translation = tf.constant([x, y, z], dtype=tf.float32)
+        translated_points = points_pyramid2 + translation
 
-    translated_points = points_pyramid2 + translation
+        fig2 = plt_basic_object_(translated_points.numpy(), counter)
+        st.pyplot(fig2)
 
-    fig2 = plt_basic_object_(translated_points.numpy(), counter)
-    st.pyplot(fig2)
+    elif choice == 'Rotate':
+        st.title("Image Rotate Pyramid")
+        x = st.slider("Enter for x:", -15, 15, 0, step=1,key='my_slider4')
+        y = st.slider("Enter for y:", -15, 15, 0, step=1,key='my_slider5')
+        z = st.slider("Enter for z:", -15, 15, 0, step=1,key='my_slider6')
+
+        def rotate_obj(points_pyramid2, angle):
+            angle = float(angle)
+            rotation_matrix = tf.stack([
+                [tf.cos(angle), tf.sin(angle), 0],
+                [-tf.sin(angle), tf.cos(angle), 0],
+                [0, 0, 1]
+            ])
+
+            rotate_object = tf.matmul(tf.cast(points_pyramid2, tf.float32), tf.cast(rotation_matrix, tf.float32))
+            return rotate_object
+        
+        rotated_points = points_pyramid2 + rotate_obj
+        
+        fig2 = plt_basic_object_(rotated_points, counter)
+        st.pyplot(fig2)
 
 elif option == 'Kite':
     init_kite = _kite_(bottom_lower=(0,0,0))
