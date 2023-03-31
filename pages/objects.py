@@ -152,7 +152,7 @@ if option == 'Pyramid':
         
         rotated_points = points_pyramid2 + rotate_obj
         
-        fig2 = plt_basic_object_(rotated_points, counter)
+        fig2 = plt_basic_object_(rotated_points.numpy(), counter)
         st.pyplot(fig2)
 
 elif option == 'Kite':
